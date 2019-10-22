@@ -13,7 +13,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TaskRowListener {
     lateinit var _db: DatabaseReference
     lateinit var _adapter: TaskAdapter
     var _taskList: MutableList<Task>? = null
@@ -131,7 +131,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
+    override fun onTaskDelete(objectId: String) {
+        val task = _db.child(Statics.FIREBASE_TASK).child(objectId)
+        task.removeValue()
+    }
+    override fun onTaskChange(objectId: String, isDone: Boolean) {
+        val task = _db.child(Statics.FIREBASE_TASK).child(objectId)
+        task.child("done").setValue(isDone)
+}
+
+companion object {
         val TAG = "MainActivity"
     }
 }

@@ -13,6 +13,7 @@ class TaskAdapter(context: Context, taskList: MutableList<Task>) : BaseAdapter()
 
     private val _inflater: LayoutInflater = LayoutInflater.from(context)
     private var _taskList = taskList
+    private var _rowListener: TaskRowListener = context as TaskRowListener
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
@@ -33,21 +34,20 @@ class TaskAdapter(context: Context, taskList: MutableList<Task>) : BaseAdapter()
 
         listRowHolder.desc.text = itemText
         listRowHolder.done.isChecked = done
+        listRowHolder.done.setOnClickListener {
+            _rowListener.onTaskChange(objectId, !done) }
+
+        listRowHolder.remove.setOnClickListener {
+                _rowListener.onTaskDelete(objectId) }
 
         return view
     }
 
-    override fun getItem(index: Int): Any {
-        return _taskList.get(index)
-    }
+    override fun getItem(index: Int): Any = _taskList.get(index)
 
-    override fun getItemId(index: Int): Long {
-        return index.toLong()
-    }
+    override fun getItemId(index: Int): Long =  index.toLong()
 
-    override fun getCount(): Int {
-        return _taskList.size
-    }
+    override fun getCount(): Int = _taskList.size
 
     private class ListRowHolder(row: View?) {
         val desc: TextView = row!!.findViewById(R.id.txtTaskDesc) as TextView
